@@ -267,8 +267,7 @@ RUN apt-get update \
         libgtk-3-0 \
         libxss1 \
         libgbm1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm /etc/apt/sources.list.d/vs-code.list
+    && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' \
     && apt install ./vscode.deb  \
