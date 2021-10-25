@@ -257,6 +257,23 @@ RUN addgroup --gid 9001 user \
     && /usr/bin/printf '%s\n%s\n%s\n' 'password' 'password' 'n' | su user -c vncpasswd \
     && echo -n 'password\npassword\nn\n' | su user -c vncpasswd
 
+# Temp install vscode
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        libnss3 \
+        gnupg \ 
+        libxkbfile1 \
+        libsecret-1-0 \
+        libgtk-3-0 \
+        libxss1 \
+        libgbm1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm /etc/apt/sources.list.d/vs-code.list
+
+RUN wget -O vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' \
+    && apt install ./vscode.deb  \
+    && rm -rf ./vscode.deb
+
 USER user
 WORKDIR /home/user
 
@@ -299,19 +316,3 @@ RUN rm /tmp/skipcache \
     && bash install.sh \
     && ln -s /neurodesktop-storage/containers /neurocommand/local/containers 
 
-# Temp install vscode
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-        libnss3 \
-        gnupg \ 
-        libxkbfile1 \
-        libsecret-1-0 \
-        libgtk-3-0 \
-        libxss1 \
-        libgbm1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm /etc/apt/sources.list.d/vs-code.list
-
-RUN wget -O vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' \
-    && apt install ./vscode.deb  \
-    && rm -rf ./vscode.deb
