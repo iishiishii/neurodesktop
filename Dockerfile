@@ -205,6 +205,7 @@ RUN export VERSION=${GO_VERSION} OS=linux ARCH=amd64 \
     && make -C builddir install \
     && rm -rf /usr/local/go $GOPATH 
 
+
 # Setup module system & singularity
 COPY ./config/.bashrc /tmp/.bashrc
 RUN cat /tmp/.bashrc >> /etc/skel/.bashrc && rm /tmp/.bashrc \
@@ -251,12 +252,26 @@ RUN addgroup --gid 9001 user \
 USER user
 WORKDIR /home/user
 
+# Install vscode extensions
+ENV DONT_PROMPT_WSL_INSTALL=1
+RUN code --install-extension julialang.language-julia \
+    && code --install-extension ms-python.python \
+    && code --install-extension ms-python.vscode-pylance \
+    && code --install-extension ms-toolsai.jupyter \
+    && code --install-extension ms-toolsai.jupyter-keymap \
+    && code --install-extension ms-toolsai.jupyter-renderers
+
+# This currently does not work, because the persistent storage does not exist yet. Can we do this on Startup?
 # Link vscode config to persistant storage
-RUN mkdir -p /home/user/.config \
-    && ln -s /neurodesktop-storage/.config/Code .config/Code \
-    && ln -s /neurodesktop-storage/.vscode .vscode
+# RUN mkdir -p /home/user/.config \
+#     && ln -s /neurodesktop-storage/.config/Code .config/Code \
+#     && ln -s /neurodesktop-storage/.vscode .vscode
 
 USER root
+
+#Setup conda on CVMFS
+RUN mkdir -p /opt/miniconda-latest/bin/
+RUN ln -s /cvmfs/neurodesk.ardc.edu.au/containers/condaenvs_1.0.0_20211011/condaenvs_1.0.0_20211011.simg/opt/miniconda-latest/bin/python /opt/miniconda-latest/bin/python
 
 # Add entrypoint script
 COPY config/startup.sh /startup.sh
@@ -275,3 +290,4 @@ RUN rm /tmp/skipcache \
     && bash build.sh --lxde --edit \
     && bash install.sh \
     && ln -s /neurodesktop-storage/containers /neurocommand/local/containers 
+
