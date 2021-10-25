@@ -256,11 +256,6 @@ RUN mkdir -p /home/user/.config \
     && ln -s /neurodesktop-storage/.config/Code .config/Code \
     && ln -s /neurodesktop-storage/.vscode .vscode
 
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && bash Miniconda3-latest-Linux-x86_64.sh -b \
-    && rm Miniconda3-latest-Linux-x86_64.sh \
-    && miniconda3/bin/conda init
-
 USER root
 
 # Add entrypoint script
