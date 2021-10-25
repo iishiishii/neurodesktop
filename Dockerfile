@@ -82,11 +82,15 @@ RUN wget "https://apache.mirror.digitalpacific.com.au/guacamole/${GUACAMOLE_VERS
 RUN echo "user-mapping: /etc/guacamole/user-mapping.xml" > /etc/guacamole/guacamole.properties \
     && touch /etc/guacamole/user-mapping.xml
 
-# Add Visual Studio code and nextcloud client
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
-    && mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg \
-    && echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vs-code.list \
-    && add-apt-repository ppa:nextcloud-devs/client
+# # Add Visual Studio code and nextcloud client
+# This is currently not working? Error at microsoft?
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
+#     && mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg \
+#     && echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vs-code.list \
+#     && add-apt-repository ppa:nextcloud-devs/client
+
+# Add nextcloud client
+RUN add-apt-repository ppa:nextcloud-devs/client
 
 # Add CVMFS
 RUN wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb \
@@ -108,7 +112,6 @@ RUN apt-get update \
         lmod \
         git \
         aria2 \
-        code \
         emacs \
         gedit \
         htop \
@@ -291,3 +294,19 @@ RUN rm /tmp/skipcache \
     && bash install.sh \
     && ln -s /neurodesktop-storage/containers /neurocommand/local/containers 
 
+# Temp install vscode
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        libnss3 \
+        gnupg \ 
+        libxkbfile1 \
+        libsecret-1-0 \
+        libgtk-3-0 \
+        libxss1 \
+        libgbm1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm /etc/apt/sources.list.d/vs-code.list
+
+RUN wget -O vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' \
+    && apt install ./vscode.deb  \
+    && rm -rf ./vscode.deb
