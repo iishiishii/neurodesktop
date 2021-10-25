@@ -22,4 +22,4 @@ if [ -f '/usr/share/module.sh' ]; then
         fi
 fi
 
-export PATH="/usr/local/singularity/bin:${PATH}"
+export PATH="/usr/local/singularity/bin:/home/user/.local/bin:${PATH}"
