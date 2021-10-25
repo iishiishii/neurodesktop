@@ -122,7 +122,6 @@ RUN apt-get update \
         tree \
         vim \
         gcc \
-        python3-dev \
         graphviz \
         libzstd1 \
         libgfortran5 \
@@ -139,7 +138,6 @@ RUN apt-get update \
         libseccomp-dev \
         wget \
         pkg-config \
-        git \
         cryptsetup-bin\
         lsb-release \
         cvmfs \
@@ -170,11 +168,6 @@ RUN mkdir -p /etc/cvmfs/keys/ardc.edu.au/ \
 
 # Add module script
 COPY ./config/module.sh /usr/share/
-
-# Install nipype
-RUN pip3 install nipype \
-    && rm -rf /root/.cache/pip \
-    && rm -rf /home/ubuntu/.cache/
 
 # Configure tiling of windows SHIFT-ALT-CTR-{Left,right,top,Bottom} and other openbox desktop mods
 COPY ./config/rc.xml /etc/xdg/openbox
