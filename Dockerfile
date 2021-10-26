@@ -290,6 +290,12 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && rm Miniconda3-latest-Linux-x86_64.sh \
     && miniconda3/bin/conda init
 
+
+# Add condaenvs
+RUN git clone https://github.com/NeuroDesk/condaenvs /home/user/condaenvs
+WORKDIR /home/user/condaenvs
+RUN bash /home/user/condaenvs/install_all.sh
+
 USER root
 
 # Add entrypoint script
