@@ -292,6 +292,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 
 
 # Add condaenvs
+ADD "http://api.github.com/repos/NeuroDesk/condaenvs/commits/main" /tmp/skipcache
 RUN git clone https://github.com/NeuroDesk/condaenvs /home/user/condaenvs
 WORKDIR /home/user/condaenvs
 RUN bash /home/user/condaenvs/install_all.sh
