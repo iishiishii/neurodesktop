@@ -3,14 +3,17 @@ set -e
 SERVERIP=$1
 # SERVERIP=203.101.231.144
 
-sudo apt-get install lsb-release
-wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb
-echo "[DEBUG]: adding cfms repo"
-sudo dpkg -i cvmfs-release-latest_all.deb
-echo "[DEBUG]: apt-get update"
-sudo apt-get update --allow-unauthenticated
-echo "[DEBUG]: apt-get install cvmfs"
-sudo apt-get install cvmfs --allow-unauthenticated
+# sudo apt-get install lsb-release
+# wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb
+# echo "[DEBUG]: adding cfms repo"
+# sudo dpkg -i cvmfs-release-latest_all.deb
+# echo "[DEBUG]: apt-get update"
+# sudo apt-get update --allow-unauthenticated
+# echo "[DEBUG]: apt-get install cvmfs"
+# sudo apt-get install cvmfs --allow-unauthenticated
+
+
+or try: https://github.com/cvmfs/cvmfsexec
 
 sudo mkdir -p /etc/cvmfs/keys/ardc.edu.au/
 
@@ -35,15 +38,51 @@ echo 'CVMFS_KEYS_DIR="/etc/cvmfs/keys/ardc.edu.au/"' | sudo tee -a /etc/cvmfs/co
 echo "CVMFS_HTTP_PROXY=DIRECT" | sudo tee  /etc/cvmfs/default.local
 echo "CVMFS_QUOTA_LIMIT=5000" | sudo tee -a  /etc/cvmfs/default.local
 
-sudo cvmfs_config setup
-# sudo cvmfs_config wsl2_start
-sudo cvmfs_config chksetup
 
-ls /cvmfs/neurodesk.ardc.edu.au
 
-# sudo cvmfs_config umount
+docker pull cvmfs/service
 
-cvmfs_config stat -v neurodesk.ardc.edu.au
+docker run -d --rm \
+  -e CVMFS_CLIENT_PROFILE=single \
+  -e CVMFS_REPOSITORIES=neurodesk.ardc.edu.au \
+  --cap-add SYS_ADMIN \
+  --device /dev/fuse \
+  --volume /etc/cvmfs/:/etc/cvmfs/ \
+  --volume /cvmfs:/cvmfs:shared \
+  cvmfs/service:2.8.0-1
+
+
+
+# test:
+sudo docker run -it --rm \
+-e CVMFS_CLIENT_PROFILE=single \
+-e CVMFS_REPOSITORIES=neurodesk.ardc.edu.au \
+--cap-add SYS_ADMIN \
+--device /dev/fuse \
+--volume /etc/cvmfs/default.local:/etc/cvmfs/default.local \
+--volume /etc/cvmfs/config.d/neurodesk.ardc.edu.au.conf:/etc/cvmfs/config.d/neurodesk.ardc.edu.au.conf \
+--volume /cvmfs:/cvmfs:shared \
+cvmfs/service:2.8.0-1
+
+
+sudo docker run -it --rm \
+-e CVMFS_CLIENT_PROFILE=single \
+-e CVMFS_REPOSITORIES=neurodesk.ardc.edu.au \
+--cap-add SYS_ADMIN \
+--device /dev/fuse \
+--volume /etc/cvmfs:/etc/cvmfs/ \
+--volume /cvmfs:/cvmfs:shared \
+cvmfs/service:2.8.0-1 bash
+
+# sudo cvmfs_config setup
+# # sudo cvmfs_config wsl2_start
+# sudo cvmfs_config chksetup
+
+# ls /cvmfs/neurodesk.ardc.edu.au
+
+# # sudo cvmfs_config umount
+
+# cvmfs_config stat -v neurodesk.ardc.edu.au
 
 
 
