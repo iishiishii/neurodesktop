@@ -181,7 +181,9 @@ Starting Guacamole Daemon
     Password: \"password\"
 ------------------------------------------------------------------"
 if [ "$debug" = true ]; then
+    echo "starting guacd in debug mode"
     su user -c "guacd -f -L debug && echo"
 else
+    echo "starting guacd in normal mode"
     su user -c "guacd -f && echo"
 fi
