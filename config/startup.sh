@@ -8,6 +8,7 @@
 # -v, --vnc  add VNC connection to Guacamole
 # -r, --rdp  add RDP connection to Guacamole
 # -s, --ssh  add SSH connection to Guacamole
+# -d, --debug output debug information when starting container
 # -h, --help      print out this help
 # For more information see: https://github.com/NeuroDesk/neurodesktop"
 # }
@@ -27,6 +28,10 @@ while [[ $# -gt 0 ]]
       ;;
       --rdp)
       rdp=true
+      shift # past argument
+      ;;
+      --debug)
+      debug=true
       shift # past argument
       ;;
       *)    # unknown option
@@ -175,5 +180,8 @@ Starting Guacamole Daemon
     Username: \"user\"
     Password: \"password\"
 ------------------------------------------------------------------"
-# su user -c "guacd -f -L debug && echo"
-su user -c "guacd -f && echo"
+if [ "$debug" = true ]; then
+    su user -c "guacd -f -L debug && echo"
+else
+    su user -c "guacd -f && echo"
+fi
