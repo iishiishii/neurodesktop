@@ -180,9 +180,16 @@ Starting Guacamole Daemon
     Username: \"user\"
     Password: \"password\"
 ------------------------------------------------------------------"
+
+echo \
+"# Hostname and port of guacamole proxy
+guacd-hostname: 127.0.0.1
+guacd-port:     4822
+" >> /etc/guacamole/guacamole.properties
+
 if [ "$debug" = true ]; then
     echo "starting guacd in debug mode"
-    su user -c "guacd -f -L debug && echo"
+    su user -c "guacd -f -b 127.0.0.1 -L debug && echo"
 else
     echo "starting guacd in normal mode"
     su user -c "guacd -f && echo"
