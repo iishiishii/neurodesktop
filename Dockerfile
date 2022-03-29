@@ -83,8 +83,7 @@ RUN echo "user-mapping: /etc/guacamole/user-mapping.xml" > /etc/guacamole/guacam
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
     && mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg \
     && echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vs-code.list \
-    && DEBIAN_FRONTEND=noninteractive \
-    && add-apt-repository ppa:nextcloud-devs/client
+    && yes | add-apt-repository ppa:nextcloud-devs/client
 
 # Add CVMFS
 RUN wget -q https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb \
